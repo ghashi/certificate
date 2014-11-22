@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "libntru/src/ntru.h"
 #include "libntru/src/err.h"
 
 #ifdef NTRU_SELFTEST
@@ -14,30 +13,18 @@
 
 #endif
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-
-#define NTRU_INT_POLY_SIZE	(2 + 2 * NTRU_MAX_N)
-#define NTRU_TERN_POLY_SIZE	(3 * 2 + 2 * (NTRU_MAX_ONES + NTRU_MAX_ONES))
-#define NTRU_PROD_POLY_SIZE	(2 + 3 * NTRU_TERN_POLY_SIZE)
-#define NTRU_PRIV_POLY_SIZE	MAX(NTRU_PROD_POLY_SIZE, NTRU_TERN_POLY_SIZE)
-#define NTRU_ENC_PRIV_KEY_SIZE	(3 + NTRU_PRIV_POLY_SIZE)
-#define NTRU_ENC_PUB_KEY_SIZE	(2 + NTRU_INT_POLY_SIZE)
-
-#define NTRU_SKEY_SIZE		(NTRU_ENC_PRIV_KEY_SIZE)
-#define NTRU_PKEY_SIZE		(NTRU_ENC_PUB_KEY_SIZE)
-
 #define	NTRU_BUFFER_SIZE	1000
 
-void serialize_ntru_skey(NtruEncPrivKey *skey, unsigned char buffer[NTRU_SKEY_SIZE]);
-void deserialize_ntru_skey(NtruEncPrivKey *skey, unsigned char buffer[NTRU_SKEY_SIZE]);
-void serialize_ntru_pkey(NtruEncPubKey *pkey, unsigned char buffer[NTRU_PKEY_SIZE]);
-void deserialize_ntru_pkey(NtruEncPubKey *pkey, unsigned char buffer[NTRU_PKEY_SIZE]);
+void serialize_ntru_skey(NtruEncPrivKey skey[NTRU_SKEY_SIZE], unsigned char buffer[NTRU_SKEY_SIZE]);
+void deserialize_ntru_skey(NtruEncPrivKey skey[NTRU_SKEY_SIZE], unsigned char buffer[NTRU_SKEY_SIZE]);
+void serialize_ntru_pkey(NtruEncPubKey pkey[NTRU_PKEY_SIZE], unsigned char buffer[NTRU_PKEY_SIZE]);
+void deserialize_ntru_pkey(NtruEncPubKey pkey[NTRU_PKEY_SIZE], unsigned char buffer[NTRU_PKEY_SIZE]);
 
 NtruEncParams params = EES613EP1;
 NtruRandContext rand_ctx;
 NtruRandGen rng = NTRU_RNG_DEFAULT;
 
-void ntru_keygen(unsigned char *skey, unsigned char *pkey) {
+void ntru_keygen(unsigned char skey[NTRU_SKEY_SIZE], unsigned char pkey[NTRU_PKEY_SIZE]) {
 	NtruEncKeyPair kp;
 	ntru_rand_init(&rand_ctx, &rng);
 	while(ntru_gen_key_pair(&params, &kp, &rand_ctx) != NTRU_SUCCESS);
@@ -46,6 +33,10 @@ void ntru_keygen(unsigned char *skey, unsigned char *pkey) {
 	//memcpy(pkey, &kp.pub, NTRU_PKEY_SIZE);
 	serialize_ntru_skey(&kp.priv, skey);
 	serialize_ntru_pkey(&kp.pub, pkey);
+}
+
+void ntru_ciphertext_len() {
+	return ntru_enc_len(&params);
 }
 
 void ntru_encryption(const unsigned char pkey[], const char *plaintext, unsigned char *ciphertext) {
@@ -396,11 +387,11 @@ unsigned char test_ntru_enc_pub_key_serialization() {
 
 #endif // NTRU_SELFTEST
 
-void serialize_ntru_skey(NtruEncPrivKey *skey, unsigned char buffer[NTRU_SKEY_SIZE]) {
+void serialize_ntru_skey(NtruEncPrivKey skey[NTRU_SKEY_SIZE], unsigned char buffer[NTRU_SKEY_SIZE]) {
 	serialize_ntru_enc_priv_key(skey, buffer);
 }
 
-void deserialize_ntru_skey(NtruEncPrivKey *skey, unsigned char buffer[NTRU_SKEY_SIZE]) {
+void deserialize_ntru_skey(NtruEncPrivKey skey[NTRU_SKEY_SIZE], unsigned char buffer[NTRU_SKEY_SIZE]) {
 	deserialize_ntru_enc_priv_key(skey, buffer);
 }
 
@@ -429,11 +420,11 @@ unsigned char test_ntru_skey_serialization() {
 
 #endif // NTRU_SELFTEST
 
-void serialize_ntru_pkey(NtruEncPubKey *pkey, unsigned char buffer[NTRU_PKEY_SIZE]) {
+void serialize_ntru_pkey(NtruEncPubKey pkey[NTRU_PKEY_SIZE], unsigned char buffer[NTRU_PKEY_SIZE]) {
 	serialize_ntru_enc_pub_key(pkey, buffer);
 }
 
-void deserialize_ntru_pkey(NtruEncPubKey *pkey, unsigned char buffer[NTRU_PKEY_SIZE]) {
+void deserialize_ntru_pkey(NtruEncPubKey pkey[NTRU_PKEY_SIZE], unsigned char buffer[NTRU_PKEY_SIZE]) {
 	deserialize_ntru_enc_pub_key(pkey, buffer);
 }
 
