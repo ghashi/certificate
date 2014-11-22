@@ -35,7 +35,7 @@ void ntru_keygen(unsigned char skey[NTRU_SKEY_SIZE], unsigned char pkey[NTRU_PKE
 	serialize_ntru_pkey(&kp.pub, pkey);
 }
 
-void ntru_ciphertext_len() {
+unsigned int ntru_ciphertext_len() {
 	return ntru_enc_len(&params);
 }
 
