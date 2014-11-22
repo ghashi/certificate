@@ -14,7 +14,7 @@ NTRU_OBJS=bin/ntru.o bin/bitstring.o bin/encparams.o bin/hash.o bin/idxgen.o bin
 ECDSA_OBJS=bin/uECC.o bin/ecdsa.o
 DYN_LIB_OBJS=bin/dyn_bitstring.o bin/dyn_certificate.o bin/dyn_cert_time.o bin/dyn_ecdsa.o bin/dyn_encparams.o bin/dyn_hash.o bin/dyn_idxgen.o bin/dyn_key.o bin/dyn_libntru.o bin/dyn_mgf.o bin/dyn_ntru.o bin/dyn_poly.o bin/dyn_rand.o bin/dyn_sha1.o bin/dyn_sha2.o bin/dyn_uECC.o
 
-all:		certificate ecdsa ntru
+all:		certificate ecdsa ntru libs
 
 ntru:		$(NTRU_SRC_DIR)/ntru.c
 		$(foreach src, $(NTRU_SRC), $(CC) $(NTRU_SRC_DIR)/$(src).c -c -o bin/$(src).o $(CFLAGS);)
