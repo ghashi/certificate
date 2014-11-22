@@ -132,6 +132,7 @@ void generate_certificate(const unsigned char csr[CSR_MAX_SIZE], const char vali
 		base64encode(buffer, index, certificate, CSR_MAX_SIZE);
 	}
 	else{
+    certificate[0] = '\0';
 		if( compare_dates(valid, time) != -1)
 			printf("Authentication ERROR: !(valid > t_now)\n");
 		else
