@@ -1,2 +1,4 @@
-*.swp # swap file
+*.swp
 *.swo
+
+bin
